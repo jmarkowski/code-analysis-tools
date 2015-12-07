@@ -96,8 +96,11 @@ class Source:
 
         used_header_set = self.find_used_headers(self.include_lst,
                                                                 set(header_lst))
+        longest_file = 19
         for h in used_header_set:
+            longest_file = max(longest_file, len(h.filename))
             header_tag_set |= h.tag_set
+        longest_file += 1
 
         used_tag_set = header_tag_set & self.tag_set
 
@@ -119,8 +122,9 @@ class Source:
             except ZeroDivisionError as e:
                 utility = 0
 
+            istr = '{:<' + str(longest_file + 30) + '}'
             taglist = textwrap.fill(' '.join(h_tag_set), cols - 5,
-                                          subsequent_indent='{:<50}'.format(''))
+                                              subsequent_indent=istr.format(''))
 
             entry = {
                 'filename' : h.filename,
@@ -134,16 +138,17 @@ class Source:
                                                                    reverse=True)
 
         print('\nANALYSIS: {}'.format(self.filename))
-        print('{:<20s}{:<15s}{:<15s}{}' \
-                        .format('HEADER:','TYPE:', 'UTILITY (%):','USED TAGS:'))
+        fstra = '{:<' + str(longest_file) + 's}{:<15s}{:<15s}{}'
+        fstrn = '{:<' + str(longest_file) + 's}{:<15s}{:<15.1f}{}'
+        print(fstra.format('HEADER:','TYPE:', 'UTILITY (%):','USED TAGS:'))
         for item in sorted_utility_lst:
             if item['utility'] == 0:
                 f = (item['filename'], item['type'], '-', item['taglist'])
-                print('{:<20s}{:<15s}{:<15s}{}'.format(*f))
+                print(fstra.format(*f))
             else:
                 f = (item['filename'], item['type'], item['utility'] * 100,
                                                                 item['taglist'])
-                print('{:<20s}{:<15s}{:<15.1f}{}'.format(*f))
+                print(fstrn.format(*f))
 
 
 class Header:
@@ -218,8 +223,11 @@ class Header:
 
         used_source_set = self.find_used_sources(set(header_lst), set(source_lst))
 
+        longest_file = 19
         for s in used_source_set:
+            longest_file = max(longest_file, len(s.filename))
             source_tag_set |= s.tag_set
+        longest_file += 1
 
         used_tag_set = source_tag_set & self.tag_set
 
@@ -241,8 +249,9 @@ class Header:
             except ZeroDivisionError as e:
                 utility = 0
 
+            istr = '{:<' + str(longest_file + 30) + '}'
             taglist = textwrap.fill(' '.join(s_tag_set), cols - 5,
-                                          subsequent_indent='{:<50}'.format(''))
+                                              subsequent_indent=istr.format(''))
 
             entry = {
                 'filename' : s.filename,
@@ -256,16 +265,17 @@ class Header:
                                                                    reverse=True)
 
         print('\nANALYSIS: {}'.format(self.filename))
-        print('{:<20s}{:<15s}{:<15s}{}' \
-                        .format('SOURCE:','TYPE:', 'UTILITY (%):','USED TAGS:'))
+        fstra = '{:<' + str(longest_file) + 's}{:<15s}{:<15s}{}'
+        fstrn = '{:<' + str(longest_file) + 's}{:<15s}{:<15.1f}{}'
+        print(fstra.format('SOURCE:','TYPE:', 'UTILITY (%):','USED TAGS:'))
         for item in sorted_utility_lst:
             if item['utility'] == 0:
                 f = (item['filename'], item['type'], '-', item['taglist'])
-                print('{:<20s}{:<15s}{:<15s}{}'.format(*f))
+                print(fstra.format(*f))
             else:
                 f = (item['filename'], item['type'], item['utility'] * 100,
                                                                 item['taglist'])
-                print('{:<20s}{:<15s}{:<15.1f}{}'.format(*f))
+                print(fstrn.format(*f))
 
 
 class Tag:
