@@ -105,7 +105,7 @@ class Source:
         used_tag_set = header_tag_set & self.tag_set
 
         size = get_terminal_size((80, 20)) # fallback
-        cols = max(40, size.columns - 50)
+        cols = max(50, size.columns - 50)
 
         utility_lst = []
 
@@ -122,9 +122,10 @@ class Source:
             except ZeroDivisionError as e:
                 utility = 0
 
-            istr = '{:<' + str(longest_file + 30) + '}'
-            taglist = textwrap.fill(' '.join(h_tag_set), cols - 5,
-                                              subsequent_indent=istr.format(''))
+            istr = '\n{:<' + str(longest_file + 30) + '}'
+            joiner = istr.format('')
+            taglist = textwrap.fill(' '.join(h_tag_set), cols - 5)
+            taglist = joiner.join(taglist.split('\n'))
 
             entry = {
                 'filename' : h.filename,
@@ -232,7 +233,7 @@ class Header:
         used_tag_set = source_tag_set & self.tag_set
 
         size = get_terminal_size((80, 20)) # fallback
-        cols = max(40, size.columns - 50)
+        cols = max(50, size.columns - 50)
 
         utility_lst = []
 
@@ -249,9 +250,10 @@ class Header:
             except ZeroDivisionError as e:
                 utility = 0
 
-            istr = '{:<' + str(longest_file + 30) + '}'
-            taglist = textwrap.fill(' '.join(s_tag_set), cols - 5,
-                                              subsequent_indent=istr.format(''))
+            istr = '\n{:<' + str(longest_file + 30) + '}'
+            joiner = istr.format('')
+            taglist = textwrap.fill(' '.join(s_tag_set), cols - 5)
+            taglist = joiner.join(taglist.split('\n'))
 
             entry = {
                 'filename' : s.filename,
