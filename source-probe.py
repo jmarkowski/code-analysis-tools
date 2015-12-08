@@ -90,7 +90,7 @@ class Source:
         return used_set | parent_set
 
 
-    def utility(self, header_lst):
+    def print_utility(self, header_lst):
 
         header_tag_set = set()
 
@@ -217,7 +217,7 @@ class Header:
 
         return used_set
 
-    def utility(self, header_lst, source_lst):
+    def print_utility(self, header_lst, source_lst):
 
         source_tag_set = set()
 
@@ -276,6 +276,31 @@ class Header:
                 f = (item['filename'], item['type'], item['utility'] * 100,
                                                                 item['taglist'])
                 print(fstrn.format(*f))
+
+    def print_tag_frequency(self, header_lst, source_lst):
+        tag_utility_dct = dict(zip(self.tag_lst, [0] * len(self.tag_lst)))
+
+        used_source_set = self.find_used_sources(set(header_lst), set(source_lst))
+
+        longest_tag_name = 19
+        for tag in tag_utility_dct.keys():
+            for s in used_source_set:
+                if tag in s.tag_set:
+                    tag_utility_dct[tag] += 1
+            longest_tag_name = max(longest_tag_name, len(tag))
+        longest_tag_name += 1
+
+        print('\nTAG USAGE FREQUENCY: {}'.format(self.filename))
+
+        sorted_tag_utility_lst = sorted(tag_utility_dct.items(),
+                                                key=itemgetter(1), reverse=True)
+        fstra = '{:<' + str(longest_tag_name) + '}{}'
+        fstrn = '{:<' + str(longest_tag_name) + '}{}'
+        for tag,cnt in sorted_tag_utility_lst:
+            if cnt == 0:
+                print(fstra.format(tag, '-'))
+            else:
+                print(fstrn.format(tag, cnt))
 
 
 class Tag:
@@ -390,6 +415,11 @@ def parse_arguments():
         action='store_true',
         help='verbose mode')
 
+    parser.add_argument('-t', '--tag-frequency',
+        dest='show_tag_freq',
+        action='store_true',
+        help='show utility at the tag level')
+
     parser.add_argument('-r', '--recursive',
         dest='recursive',
         action='store_true',
@@ -449,9 +479,11 @@ def main():
 
     for af in analysis_files:
         if isinstance(af, Source):
-            af.utility(headers)
+            af.print_utility(headers)
         elif isinstance(af, Header):
-            af.utility(headers, sources)
+            af.print_utility(headers, sources)
+            if args.show_tag_freq:
+                af.print_tag_frequency(headers, sources)
 
     return RetCode.OK
 
