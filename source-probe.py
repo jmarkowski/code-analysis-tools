@@ -124,7 +124,7 @@ class Source:
 
             istr = '\n{:<' + str(longest_file + 30) + '}'
             joiner = istr.format('')
-            taglist = textwrap.fill(' '.join(h_tag_set), cols - 5)
+            taglist = textwrap.fill(' '.join(h_tag_set), cols - 10)
             taglist = joiner.join(taglist.split('\n'))
 
             entry = {
@@ -252,7 +252,7 @@ class Header:
 
             istr = '\n{:<' + str(longest_file + 30) + '}'
             joiner = istr.format('')
-            taglist = textwrap.fill(' '.join(s_tag_set), cols - 5)
+            taglist = textwrap.fill(' '.join(s_tag_set), cols - 10)
             taglist = joiner.join(taglist.split('\n'))
 
             entry = {
