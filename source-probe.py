@@ -36,7 +36,10 @@ def bash_cmd(cmd):
         out_bytes = subprocess.check_output(cmd.split())
     except subprocess.CalledProcessError as e:
         out_bytes = e.output        # output generated before error
-        retcode   = e.returncode
+        retcode = e.returncode
+    except:
+        print_error('Command \'{}\' not found'.format(cmd.split()[0]))
+        retcode = RetCode.ERROR
 
     out_text = out_bytes.decode('utf-8')
 
@@ -184,6 +187,9 @@ class Header:
         cmd = 'ctags -f {} --excmd=number {}'.format(tag_f, abs_f)
 
         (out_text, retcode) = bash_cmd(cmd)
+
+        if retcode != RetCode.OK:
+            return retcode
 
         with open(tag_f, 'rt') as f:
             data = f.read()
@@ -442,6 +448,15 @@ def main():
     args = parse_arguments()
     verbose_flag = args.verbose
 
+    if not args.analysis_lst:
+        print('Specify files to analyze using the \'-a\' argument')
+        return RetCode.ARGS
+
+    if not args.file_lst:
+        print('Specify all source/header files using the \'-f\' argument')
+        return RetCode.ARGS
+
+
     analysis_file_lst = list(set(args.analysis_lst))
     full_file_lst = list(set(args.file_lst) | set(args.analysis_lst))
 
@@ -472,8 +487,16 @@ def main():
 
     for h in h_files:
         hf = Header(h)
-        hf.read()
-        hf.create_tags()
+
+        try:
+            hf.read()
+            hf.create_tags()
+        except FileNotFoundError as e:
+            print_error(e)
+            return RetCode.ERROR
+        except:
+            return RetCode.ERROR
+
         headers.append(hf)
 
         if h in analysis_file_lst:
