@@ -68,8 +68,8 @@ class Source:
 
         self.include_lst = includes_re.findall(self.data)
 
-        tagname_re = re.compile(r'[\W](\w+)[\W]')
-        tag_set = set(tagname_re.findall(self.data))
+        tagname_re = re.compile(r'(\w+)\W')
+        tag_set = set(tagname_re.findall(self.data + ' '))
 
         self.tag_lst = list(tag_set)
         self.tag_lst.sort()
@@ -505,6 +505,7 @@ def main():
     for af in analysis_files:
         if isinstance(af, Source):
             af.print_utility(headers)
+
         elif isinstance(af, Header):
             af.print_utility(headers, sources)
             if args.show_tag_freq:
