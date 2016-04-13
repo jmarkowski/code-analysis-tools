@@ -8,6 +8,7 @@ import glob
 from operator import itemgetter
 import textwrap
 from shutil import get_terminal_size
+from tempfile import NamedTemporaryFile
 
 
 verbose_flag = False
@@ -182,16 +183,16 @@ class Header:
     def create_tags(self):
         cur_path = os.path.abspath('.')
 
-        tag_f = self.filename + '.tags'
+        tag_f = NamedTemporaryFile()
         abs_f = os.path.join(cur_path, self.filename)
-        cmd = 'ctags -f {} --excmd=number {}'.format(tag_f, abs_f)
+        cmd = 'ctags -f {} --excmd=number {}'.format(tag_f.name, abs_f)
 
         (out_text, retcode) = bash_cmd(cmd)
 
         if retcode != RetCode.OK:
             return retcode
 
-        with open(tag_f, 'rt') as f:
+        with open(tag_f.name, 'rt') as f:
             data = f.read()
 
         ctag_lst = list(filter(lambda d: not d.startswith('!_'), \
