@@ -505,10 +505,8 @@ def main():
         try:
             hf.read()
             hf.create_tags()
-        except FileNotFoundError as e:
+        except Exception as e:
             print_error(e)
-            return RetCode.ERROR
-        except:
             return RetCode.ERROR
 
         headers.append(hf)
