@@ -9,6 +9,7 @@ from operator import itemgetter
 import textwrap
 from shutil import get_terminal_size
 from tempfile import NamedTemporaryFile
+from shutil import copyfile
 
 
 verbose_flag = False
@@ -183,9 +184,21 @@ class Header:
     def create_tags(self):
         cur_path = os.path.abspath('.')
 
-        tag_f = NamedTemporaryFile()
         abs_f = os.path.join(cur_path, self.filename)
-        cmd = 'ctags -f {} --excmd=number {}'.format(tag_f.name, abs_f)
+        tag_f = NamedTemporaryFile(suffix='.tags')
+        cpy_f = NamedTemporaryFile(suffix=self.filename)
+
+        copyfile(abs_f, cpy_f.name)
+
+        # Find extern functions and convert them to prototypes so that ctags can
+        # tag these to belong to the header.
+        extern_re = re.compile(r'(extern )(.*)[;]{1}')
+        with open(cpy_f.name, 'r+') as f:
+            data = f.read()
+            data_new = extern_re.sub(r'\2 {}', data, re.DOTALL)
+            f.write(data_new)
+
+        cmd = 'ctags -f {} --excmd=number {}'.format(tag_f.name, cpy_f.name)
 
         (out_text, retcode) = bash_cmd(cmd)
 
