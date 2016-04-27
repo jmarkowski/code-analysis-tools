@@ -190,12 +190,14 @@ class Header:
 
         copyfile(abs_f, cpy_f.name)
 
-        # Find extern functions and convert them to prototypes so that ctags can
-        # tag these to belong to the header.
-        extern_re = re.compile(r'(extern )(.*)[;]{1}')
+        # Find externed functions/variables and convert them to prototypes so
+        # that ctags can tag these to belong to the header.
+        extern_func_re = re.compile(r'(extern )(.*\))[;]{1}')
+        extern_var_re  = re.compile(r'(extern )(.*)[;]{1}')
         with open(cpy_f.name, 'r+') as f:
             data = f.read()
-            data_new = extern_re.sub(r'\2 {}', data, re.DOTALL)
+            data_new = extern_func_re.sub(r'\2 {}', data, re.DOTALL)
+            data_new = extern_var_re.sub(r'\2;', data_new, re.DOTALL)
             f.write(data_new)
 
         cmd = 'ctags -f {} --excmd=number {}'.format(tag_f.name, cpy_f.name)
@@ -216,6 +218,7 @@ class Header:
             'enumerator',
             'function',
             'typedef',
+            'variable',
         )
 
         for ctag in ctag_lst:
