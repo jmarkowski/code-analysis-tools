@@ -192,12 +192,12 @@ class Header:
 
         # Find externed functions/variables and convert them to prototypes so
         # that ctags can tag these to belong to the header.
-        extern_func_re = re.compile(r'(extern )(.*\))[;]{1}')
-        extern_var_re  = re.compile(r'(extern )(.*)[;]{1}')
+        extern_func_re = re.compile(r'(extern )(.*?\))[;]{1}', re.DOTALL)
+        extern_var_re  = re.compile(r'(extern )(.*?)[;]{1}', re.DOTALL)
         with open(cpy_f.name, 'r+') as f:
             data = f.read()
-            data_new = extern_func_re.sub(r'\2 {}', data, re.DOTALL)
-            data_new = extern_var_re.sub(r'\2;', data_new, re.DOTALL)
+            data_new = extern_func_re.sub(r'\2 {}', data)
+            data_new = extern_var_re.sub(r'\2;', data_new)
             f.write(data_new)
 
         cmd = 'ctags -f {} --excmd=number {}'.format(tag_f.name, cpy_f.name)
