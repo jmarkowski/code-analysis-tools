@@ -394,8 +394,10 @@ def filter_files(ext_tpl, file_lst, exclude_file_lst, recurse=False):
     exclude_lst = []
 
     if exclude_file_lst:
-        for x in exclude_file_lst:
-            exclude_lst.append(glob.glob(x))
+        filtered_exclude_lst = list(filter(lambda d: d.endswith(ext_tpl),
+                                                              exclude_file_lst))
+        for x in filtered_exclude_lst:
+            exclude_lst.extend(glob.glob(x))
             print_verbose('Excluded: {}'.format(x))
 
     if recurse:
