@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
-import matplotlib.pyplot as plt
 import glob
+import sys
+
+
+try:
+    import matplotlib.pyplot as plt
+except:
+    print('Missing library: matplotlib')
+    sys.exit(0)
 
 
 def generate_dist(files_dct):
