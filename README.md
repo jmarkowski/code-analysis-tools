@@ -1,6 +1,16 @@
+# Code Analysis Tools
+
+Includes are two python scripts to help analyze the code in a __C/C++__
+codebase.
+
+* source-probe
+* codebase-stats
+
 # Source-Probe
 
 Uncover details about the connections between your __C/C++__ source and header files.
+
+## Applications
 
 This tool is useful in the following applications:
 
@@ -17,7 +27,7 @@ relationships of your source/header files with system headers such as `stdio.h`,
 `stdlib.h`, etc.
 
 
-# Installation
+## Installation
 
 The main file, `source-probe.py`, is a python script that utilizes the ctags
 program to generate tag information from your source files.
@@ -31,7 +41,7 @@ Once installed, make sure that you have these tools available in your
 environment path.
 
 
-# Example
+## Example
 
 In the below example, we are running source-probe.py to analyze a header file
 (cache.h) and check its relationship against all other source/header files.
@@ -59,3 +69,10 @@ From the list of source files, you can also see that they all directly include
 cache.h (i.e. they do not include cache.h from another header). Under the
 USED_TAGS column, you can see what keywords or structures defined in cache.h are
 being used by each source file.
+
+# Codebase Stats
+
+Generate a plot that shows a histogram of all the __C__ header and source files
+lumped into bins dependent on the number of lines of code.
+
+(work in progress)
