@@ -8,7 +8,8 @@ codebase.
 
 # Source-Probe
 
-Uncover details about the connections between your __C/C++__ source and header files.
+Uncover details about the connections between your __C/C++__ source and header
+files.
 
 ## Applications
 
