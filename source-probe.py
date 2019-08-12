@@ -483,6 +483,8 @@ def main():
                            args.recursive)
     c_files = filter_files(('.c'), full_file_lst, args.exclude_lst,
                            args.recursive)
+    c_files = filter_files(('.cpp'), full_file_lst, args.exclude_lst,
+                           args.recursive)
 
     cpp_files = filter_files(('.cpp'), full_file_lst, args.exclude_lst,
                            args.recursive)
