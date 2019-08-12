@@ -484,6 +484,11 @@ def main():
     c_files = filter_files(('.c'), full_file_lst, args.exclude_lst,
                            args.recursive)
 
+    cpp_files = filter_files(('.cpp'), full_file_lst, args.exclude_lst,
+                           args.recursive)
+
+    c_files.extend(cpp_files)
+
     if not h_files:
         print_error('No header files specified.')
         return RetCode.ERROR
